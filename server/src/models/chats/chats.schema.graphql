@@ -1,0 +1,25 @@
+type Query {
+  chats(id: ID!, friendID: ID!): [ChatReturn]!
+}
+
+type Mutation {
+  saveChat(from: ID!, to: ID!, message: String!): ID
+}
+
+type Chat {
+  _id: ID!
+  to: String!
+  from: String!
+  message: String
+  staled: Boolean
+  createdAt: String
+  updatedAt: String
+}
+
+type ChatReturn {
+  _id: ID!
+  to: User!
+  from: User!
+  message: String!
+  createdAt: String!
+}

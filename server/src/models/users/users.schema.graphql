@@ -1,0 +1,33 @@
+type Query {
+  users: [User]!
+  userById(id: ID!): User!
+  currentUser: User
+  userByUsername(username: String!): User!
+  userByEmail(email: String!): User!
+  userByEmailAndPassword(email: String!, password: String!): User!
+}
+
+type Mutation {
+  # updateUserDetails(username: String!, email: String): User!
+  # updateUserAvatar(userAvatar: String!): User!
+  # updateUserPassword(userPassword: String!): User!
+  # addFriend(id: ID!, friendId: ID!): User!
+
+  removeFriend(id: ID!, friendId: ID!): ID
+  sendFriendRequest(id: ID!, friendId: ID!): ID
+  acceptFriendRequest(id: ID!, friendId: ID!): ID
+  declineFriendRequest(id: ID!, friendId: ID!): ID
+}
+
+type User {
+  _id: ID!
+  username: String!
+  email: String!
+  password: String!
+  userAvatar: String!
+  friends: [User]!
+  friendRequests: [User]!
+  friendRequestsSent: [User]!
+  createdAt: String!
+  updatedAt: String!
+}
