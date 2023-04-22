@@ -1,1 +1,1 @@
-##Build react app into public folder before launching up
+## Build react app into public folder before launching up
