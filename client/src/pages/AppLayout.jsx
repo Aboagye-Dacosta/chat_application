@@ -5,6 +5,7 @@ import Register from "./Register";
 import Login from "./Login";
 import Profile from "./Profile";
 import { ChatContext, useChatContext } from "../hooks/useChatContext";
+import ProductListings from "./ProductListings";
 
 function AppLayout() {
   return (
@@ -13,6 +14,11 @@ function AppLayout() {
       <Route exact path='/login' element={<Login />}></Route>
       <Route exact path='/register' element={<Register />}></Route>
       <Route exact path='/profile' element={<Profile />}></Route>
+      <Route
+        exact
+        path='/ProductListings'
+        element={<ProductListings />}
+      ></Route>
       <Route
         exact
         path='/'
