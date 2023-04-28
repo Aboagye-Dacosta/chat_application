@@ -60,11 +60,11 @@ async function httpSaveUser(req, res, next) {
 }
 
 //all users
-async function httpGetAllUsers() {
+async function httpGetAllUsers(currentUserId) {
   try {
-    return await UserModel.getAllUsers();
-  } catch (err) {
-    throwNewError("Could not read users", "READ_ERROR");
+    return await UserModel.getAllUsers(currentUserId);
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -75,7 +75,7 @@ async function httpGetUserById(userId) {
     const user = await UserModel.getUserById(userId);
     return user;
   } catch (error) {
-    throwNewError("Could not load user", "READ_ERROR");
+    console.log(error);
   }
 }
 
@@ -83,11 +83,13 @@ async function httpGetUserById(userId) {
 
 async function httpGetUserByUsername({ username }) {
   try {
-    if (!username)
-      throwNewError(
-        "username or password incorrect",
-        "USERNAME_PASSWORD_ERROR"
-      );
+    if (!username) {
+      return {
+        status: false,
+        message: "username is required",
+      };
+    }
+
     const user = await UserModel.getUserByUsername(username);
     return user;
   } catch (error) {

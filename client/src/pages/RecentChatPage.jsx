@@ -1,52 +1,34 @@
-import { useQuery, gql } from "@apollo/client";
-
 import FriendProfile from "../components/FriendProfile";
 import AddSearchPanel from "../components/AddSearchPanel";
 import { useContext } from "react";
 import { ChatContext } from "../hooks/useChatContext";
-import Clickable from "../components/Clickable";
 
-function RecentChatPage() {
-  const { loading, error, data } = useQuery(
-    gql`
-      query users {
-        users {
-          _id
-          username
-          email
-          friends {
-            _id
-            username
-            email
-          }
+function RecentChatPage({ recentUsers, error }) {
+  const { handleToggleShow, setSelectedFriendId } = useContext(ChatContext);
 
-          friendRequests {
-            _id
-            username
-            email
-          }
-        }
-      }
-    `
-  );
+  if (error) {
+    console.log(error);
+  }
 
-  const { handleToggleShow } = useContext(ChatContext);
-  const handleClick = (e) => {
+  console.log(recentUsers);
+
+  const handleClick = (friendId) => {
+    setSelectedFriendId(friendId);
     handleToggleShow();
   };
 
+  
+
   return (
-    <div className='w-screen md:w-full bg-[rgba(0,0,0,.9)] h-screen overflow-hidden md:pb-0'>
+    <div className='w-screen md:w-full bg-[rgba(0,0,0,.9)] h-screen overflow-hidden md:pb-0 flex flex-col'>
       <div className='flex justify-between items-center px-2 mt-1'>
         <AddSearchPanel />
       </div>
-      <ul className='overflow-auto scrollbar-thumb-[rgba(0,0,0,.8)] scrollbar-thin scrollbar-track-transparent h-full pb-3 flex flex-col'>
-        {data?.users?.map((user) => (
-          <Clickable handleClick={handleClick} key={user._id}>
-            <li key={user._id}>
-              <FriendProfile identifier={user.username} />
-            </li>
-          </Clickable>
+      <ul className='overflow-auto scrollbar-thumb-[rgba(0,0,0,.8)] scrollbar-thin scrollbar-track-transparent flex-1 pb-8 flex flex-col'>
+        {recentUsers.recentChattedUsers.map((obj) => (
+          <li key={obj.to._id} onClick={() => handleClick(obj.to._id)}>
+            <FriendProfile identifier={obj.to.username} />
+          </li>
         ))}
       </ul>
     </div>

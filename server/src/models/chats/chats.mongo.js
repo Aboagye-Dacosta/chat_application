@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const chatSchema = new mongoose.Schema({
   to: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  from: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+  from: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   message: String,
   staled: {
     type: Boolean,

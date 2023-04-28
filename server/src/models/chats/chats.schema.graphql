@@ -1,5 +1,7 @@
 type Query {
   chats(id: ID!, friendID: ID!): [ChatReturn]!
+  recentChattedUsers: [Recent]!
+  readChats(friendId: ID!): [Chat]!
 }
 
 type Mutation {
@@ -14,6 +16,12 @@ type Chat {
   staled: Boolean
   createdAt: String
   updatedAt: String
+}
+
+type Recent {
+  _id: ID!
+  from: ID!
+  to: User!
 }
 
 type ChatReturn {

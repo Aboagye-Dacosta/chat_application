@@ -22,9 +22,9 @@ function saveUser(user) {
 }
 
 //get all users from the database
-function getAllUsers() {
+function getAllUsers(currentUserId) {
   return new Promise((resolve, reject) => {
-    UserModel.find({})
+    UserModel.find( { _id: { $nin: [currentUserId] } })
       .populate({
         path: "friendRequestsSent",
         select: options,
@@ -172,6 +172,15 @@ function removeFriend(userId, friendId) {
     )
       .then((data) => resolve(data))
       .catch((err) => reject(err));
+  });
+}
+
+//get recent chatted users
+function recentChattedFriends() {
+  return new Promise((resolve, reject) => {
+    UserModel.find({})
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
   });
 }
 

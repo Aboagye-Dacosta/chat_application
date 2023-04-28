@@ -10,7 +10,7 @@ function AppLayout() {
   return (
     <Routes>
       <Route exact path='/chat' element={<ChatPage />} />
-      <Route exact path='/message' element={<Login />}></Route>
+      <Route exact path='/login' element={<Login />}></Route>
       <Route exact path='/register' element={<Register />}></Route>
       <Route exact path='/profile' element={<Profile />}></Route>
       <Route

@@ -1,11 +1,11 @@
 const UserController = require("./controllers.users");
-// const Void = require("../../models/users/scalar-void.graphql");
 
 module.exports = {
   Query: {
     users: async (_, args, context) => {
-      return await UserController.httpGetAllUsers();
+      return await UserController.httpGetAllUsers(context.getUser._id);
     },
+    recent: async (_, args) => {},
     currentUser: async (_, args, context) => {
       return await UserController.httpGetUserById(context.getUser._id);
     },

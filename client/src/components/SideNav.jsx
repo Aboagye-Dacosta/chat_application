@@ -6,7 +6,10 @@ import Clickable from "./Clickable";
 import { ChatContext } from "../hooks/useChatContext";
 
 function SideNav({ handleCurrent, handleFriends, selected }) {
-  const { handleToggleShow, showChat } = useContext(ChatContext);
+  const {
+    handleToggleShow,
+    showChat,
+  } = useContext(ChatContext);
   return (
     <div className='flex py-1  md:flex-col items-center justify-between bg-[rgba(0,0,0)] md:py-5 text-white'>
       <ul className='flex md:flex-col items-center justify-center'>
@@ -20,7 +23,11 @@ function SideNav({ handleCurrent, handleFriends, selected }) {
             </li>
           </Clickable>
         )}
-        <Clickable handleClick={(e) => handleCurrent()}>
+        <Clickable
+          handleClick={(e) => {
+            handleCurrent();
+          }}
+        >
           <li
             className={
               "link md:mt-3 mr-1 md:mr-0  rounded-full p-2 hover:bg-gray-500 transition-all duration-200 " +
