@@ -4,9 +4,7 @@ module.exports = {
   Query: {
     chats: async (_, args) => {},
     recentChattedUsers: async (_, args, context) => {
-      return await ChatController.httpGetRecentChattedUsers(
-        context.getUser._id
-      );
+      return await ChatController.httpGetRecentChattedUsers(args.currentUserId);
     },
     readChats: async (_, args, context) => {
       console.log(

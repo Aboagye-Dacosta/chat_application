@@ -36,7 +36,8 @@ function RecentChatPage() {
           }
         }
       }
-    `
+    `,
+    { variables: { currentUserId: currentUser._id } }
   );
 
   setRefreshRecentChats(refetch);

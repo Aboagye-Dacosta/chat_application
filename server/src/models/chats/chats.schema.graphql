@@ -1,6 +1,6 @@
 type Query {
   chats(id: ID!, friendID: ID!): [ChatReturn]!
-  recentChattedUsers: [Recent]!
+  recentChattedUsers(currentUserId: ID!): [Recent]!
   readChats(friendId: ID!): [Chat]!
 }
 

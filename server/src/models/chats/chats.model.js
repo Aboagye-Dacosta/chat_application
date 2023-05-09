@@ -60,7 +60,10 @@ function saveRecentChatteredUser(from, to) {
 function readRecentChattedUsers(userFriends, currentUserId) {
   return new Promise((resolve, reject) => {
     RecentChatteredUsers.find({
-      $where: { $or: }, { from: currentUserId }] },
+      $or: [
+        { $and: [{ to: currentUserId }, { from: { $in: userFriends } }] },
+        { $and: [{ from: currentUserId }, { to: { $in: userFriends } }] },
+      ],
     })
       .populate({
         path: "to",
