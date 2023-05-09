@@ -1,7 +1,5 @@
 const bcrypt = require("bcrypt");
 const UserModel = require("../../models/users/users.model");
-const formidable = require("formidable");
-const path = require("path");
 
 //save User
 async function httpSaveUser(req, res, next) {
@@ -59,12 +57,27 @@ async function httpSaveUser(req, res, next) {
   }
 }
 
+async function httpUpdateUserDetails(id, obj) {
+  console.log("🚀 ~ file: controllers.users.js:63 ~ obj:", obj);
+  try {
+    UserModel.updateUser(id, obj);
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: controllers.users.js:67 ~ httpUpdateUserDetails ~ error:",
+      error
+    );
+  }
+}
+
 //all users
 async function httpGetAllUsers(currentUserId) {
   try {
     return await UserModel.getAllUsers(currentUserId);
   } catch (error) {
-    console.log(error);
+    console.log(
+      "🚀 ~ file: controllers.users.js:79 ~ httpGetAllUsers ~ error:",
+      error
+    );
   }
 }
 
@@ -138,8 +151,10 @@ async function httpRemoveFriend(currentUserId, friendId) {
     console.log(error);
   }
 }
+
 module.exports = {
   httpSaveUser,
+  httpUpdateUserDetails,
   httpGetAllUsers,
   httpGetUserById,
   httpGetUserByUsername,

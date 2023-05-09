@@ -49,6 +49,4 @@ const httpCurrentUser = async () => {
   }
 };
 
-
-
 export { httpRegisterUser, httpCurrentUser, httpLoginUser };

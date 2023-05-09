@@ -1,13 +1,16 @@
+const {
+  httpSaveChat,
+  httpReadChats,
+} = require("../controllers/chats/chats.controller");
+
 function socket(io) {
   io.on("connection", (socket) => {
     console.log("a user connected");
 
-    socket.on("hello", (args) => {
-      console.log(args);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("user disconnected");
+    socket.on("chat", async (args) => {
+      await httpSaveChat(args);
+      const data = await httpReadChats(args.from, args.to);
+      socket.emit("chat", data);
     });
   });
 }

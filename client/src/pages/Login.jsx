@@ -33,20 +33,20 @@ function Login() {
   return (
     <Background>
       <Container>
-        <FormComponent formType='login' handleFormSubmit={handleSubmit}>
+        <FormComponent formType="login" handleFormSubmit={handleSubmit}>
           <InputComponent
-            title='Your username'
-            name='username'
-            type='text'
+            title="Your username"
+            name="username"
+            type="text"
             error={formErrors.username}
           />
           <InputComponent
-            title='Your password'
-            name='password'
-            type='password'
+            title="Your password"
+            name="password"
+            type="password"
             error={formErrors.password}
           />
-          <ButtonComponent content='Sign in' type='submit' />
+          <ButtonComponent content="Sign in" type="submit" />
         </FormComponent>
       </Container>
       <ToastContainer />

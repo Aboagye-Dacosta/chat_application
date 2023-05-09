@@ -1,6 +1,13 @@
-import React from "react";
+import ProfileImage from "./ProfileImage";
 
-function ChatItem({ message, image, date, current = true }) {
+function ChatItem({
+  message,
+  date,
+  current = true,
+  hasAvatar,
+  userAvatar,
+  username,
+}) {
   const textOrder = current ? " " : "order-2";
   const datePos = current ? "self-end" : "self-start";
   const chatPos = current ? "justify-end pr-10" : "justify-start pl-10";
@@ -21,12 +28,14 @@ function ChatItem({ message, image, date, current = true }) {
         </div>
       </div>
       <div
-        className={"w-8 h-8 rounded-full absolute bottom-4 " + bg + " " + imgPos}
+        className={
+          "w-8 h-8 rounded-full absolute bottom-4 " + bg + " " + imgPos
+        }
       >
-        <img
-          src={image || "https://picsum.photos/200"}
-          alt=''
-          className='w-5 h-5 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+        <ProfileImage
+          hasAvatar={hasAvatar}
+          userAvatar={userAvatar}
+          username={username}
         />
       </div>
     </li>

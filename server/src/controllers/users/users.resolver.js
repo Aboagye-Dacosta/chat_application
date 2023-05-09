@@ -6,12 +6,20 @@ module.exports = {
       return await UserController.httpGetAllUsers(context.getUser._id);
     },
     recent: async (_, args) => {},
+
     currentUser: async (_, args, context) => {
-      return await UserController.httpGetUserById(context.getUser._id);
+      const user = await UserController.httpGetUserById(context.getUser._id);
+      console.log(
+        "🚀 ~ file: users.resolver.js:13 ~ currentUser: ~ user:",
+        user
+      );
+      return user;
     },
+
     userById: async (_, args) => {
       return await UserController.httpGetUserById(args.id);
     },
+
     userByUsername: async (_, args) => {
       return await UserController.httpGetUserByUsername(args);
     },

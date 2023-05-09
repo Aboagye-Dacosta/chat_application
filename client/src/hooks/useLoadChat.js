@@ -1,29 +1,31 @@
-//load chat from server
-import { useState, useEffect, useCallback } from "react";
-import { Manager } from "socket.io-client";
+import { io } from "socket.io-client";
+import { useState } from "react";
 
-const URL = "http://localhost:8000";
+function useLoadChat() {
+  const [chatMessage, setChatMessage] = useState({});
+  const socket = io();
 
+  socket.on("connect", () => {
+    console.log("socket connect successfully");
+  });
 
-export default function useLoadChat(currentUser) {
-  // const manager = new Manager(URL, {
-  //   reconnectionDelayMax: 1000,
-  //   query: {
-  //     key: "value",
-  //   },
-  // });
+  socket.on("disconnect", (reason) => {
+    console.log("🚀 ~ file: useLoadChat.js:11 ~ useLoadChat ~ reason:", reason);
+    if ((reason = "io server disconnect")) {
+      socket.connect();
+    }
+  });
 
-  // const socket = manager.socket("/chat", {
-  //   auth: {
-  //     token: "123",
-  //   },
-  // });
+  const sendMessage = (message) => {
+    socket.emit("chat", { ...message });
+  };
 
-  // manager.open((err) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  // });
+  socket.on("chat", (args) => {
+    console.log("🚀 ~ file: useLoadChat.js:24 ~ socket.on ~ args:", args)
+    setChatMessage(args);
+  });
 
-  return { sampleChat };
+  return { chatMessage, sendMessage };
 }
+
+export default useLoadChat;

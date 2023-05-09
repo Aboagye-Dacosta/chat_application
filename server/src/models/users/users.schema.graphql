@@ -23,9 +23,10 @@ type Mutation {
 type User {
   _id: ID!
   username: String!
+  description: String
   email: String!
-  password: String!
   userAvatar: String!
+  hasAvatar: Boolean
   friends: [User]!
   friendRequests: [User]!
   friendRequestsSent: [User]!

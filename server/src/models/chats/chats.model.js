@@ -5,8 +5,8 @@ const userOptions = {
   _id: 1,
   username: 1,
   email: 1,
-  password: 1,
   userAvatar: 1,
+  hasAvatar: 1,
   friends: 1,
   friendRequests: 1,
   friendRequestsSent: 1,
@@ -57,11 +57,17 @@ function saveRecentChatteredUser(from, to) {
   });
 }
 
-function readRecentChattedUsers(currentUserId) {
+function readRecentChattedUsers(userFriends, currentUserId) {
   return new Promise((resolve, reject) => {
-    RecentChatteredUsers.find({ from: currentUserId })
+    RecentChatteredUsers.find({
+      $where: { $or: }, { from: currentUserId }] },
+    })
       .populate({
         path: "to",
+        select: userOptions,
+      })
+      .populate({
+        path: "from",
         select: userOptions,
       })
       .then((data) => resolve(data))

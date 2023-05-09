@@ -1,10 +1,25 @@
-import React, { useContext, useEffect } from "react";
 import ChatItem from "./ChatItem";
-import { ChatContext } from "../hooks/useChatContext";
-import { gql, useQuery } from "@apollo/client";
+import useChatStore from "../hooks/useChatStore";
+import { shallow } from "zustand/shallow";
+import { useQuery, gql } from "@apollo/client";
+import useLoadChat from "../hooks/useLoadChat";
 
 function ChatDisplay() {
-  const { selectedFriendId } = useContext(ChatContext);
+  const [selectedUser, currentUser, setSendMessage, setCurrentUser] =
+    useChatStore(
+      (state) => [
+        state.selectedUser,
+        state.currentUser,
+        state.setSendMessage,
+        state.setCurrentUser,
+      ],
+      shallow
+    );
+
+  const { sendMessage, chatMessage } = useLoadChat();
+  setSendMessage(sendMessage);
+  console.log("🚀 ~ file: App.jsx:18 ~ App ~ chatMessage:", chatMessage);
+
   const { loading, data, refetch } = useQuery(
     gql`
       query ReadChats($friendId: ID!) {
@@ -17,37 +32,75 @@ function ChatDisplay() {
         }
         currentUser {
           _id
+          username
+          email
+          hasAvatar
+          description
+          userAvatar
         }
       }
     `,
     {
-      variables: { friendId: selectedFriendId },
+      variables: { friendId: selectedUser._id },
     }
   );
 
-  refetch();
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]">
+        loading
+      </div>
+    );
+  }
+
+  setCurrentUser(data.currentUser);
+
+  console.log("loading from display chat", data.currentUser);
+  const getChatState = (chat) => {
+    const state = chat.from === currentUser._id;
+    return state;
+  };
+
+  let chatData = data.readChats;
+  if (chatMessage.length > 0) {
+    chatData = chatMessage;
+  }
 
   return (
     <>
-      {loading ||
-        (data ? (
-          <div className='flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]'>
-            <ul>
-              {data.readChats.map((chat, index) => (
-                <ChatItem
-                  key={chat._id}
-                  date={new Date(Number(chat.createdAt)).toDateString()}
-                  current={chat.from === data.currentUser._id}
-                  message={chat.message}
-                />
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div className='flex items-center justify-center flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]'>
-            welcome
-          </div>
-        ))}
+      {chatData.length > 0 ? (
+        <div className="flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]">
+          <ul>
+            {chatData.map((chat) => (
+              <ChatItem
+                key={chat._id}
+                date={new Date(Number(chat.createdAt)).toDateString()}
+                current={getChatState(chat)}
+                message={chat.message}
+                hasAvatar={
+                  getChatState(chat)
+                    ? currentUser.hasAvatar
+                    : selectedUser.hasAvatar
+                }
+                userAvatar={
+                  getChatState(chat)
+                    ? currentUser.userAvatar
+                    : selectedUser.userAvatar
+                }
+                userName={
+                  getChatState(chat)
+                    ? currentUser.username
+                    : selectedUser.username
+                }
+              />
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]">
+          welcome
+        </div>
+      )}
     </>
   );
 }

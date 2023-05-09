@@ -41,31 +41,31 @@ function Register() {
   return (
     <Background>
       <Container>
-        <FormComponent formType='register' handleFormSubmit={handleFormSubmit}>
+        <FormComponent formType="register" handleFormSubmit={handleFormSubmit}>
           <InputComponent
-            title='Your username'
-            name='username'
+            title="Your username"
+            name="username"
             error={formErrors?.username[0]}
           />
           <InputComponent
-            title='Your email'
-            type='email'
-            name='email'
+            title="Your email"
+            type="email"
+            name="email"
             error={formErrors?.email[0]}
           />
           <InputComponent
-            title='Your password'
-            type='password'
-            name='password'
+            title="Your password"
+            type="password"
+            name="password"
             error={formErrors?.password[0]}
           />
           <InputComponent
-            title='Confirm password'
-            type='password'
-            name='confirmPassword'
+            title="Confirm password"
+            type="password"
+            name="confirmPassword"
             error={formErrors?.confirmPassword[0]}
           />
-          <ButtonComponent type='submit' content='Register' />
+          <ButtonComponent type="submit" content="Register" />
         </FormComponent>
       </Container>
       <ToastContainer />

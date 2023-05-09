@@ -1,34 +1,14 @@
-import { Routes, Route } from "react-router-dom";
+import Background from "../components/Background";
+import SideNav from "../components/SideNav";
 
-import ChatPage from "./ChatPage";
-import Register from "./Register";
-import Login from "./Login";
-import Profile from "./Profile";
-import { ChatContext, useChatContext } from "../hooks/useChatContext";
-import ProductListings from "./ProductListings";
-
-function AppLayout() {
+function AppLayout(props) {
   return (
-    <Routes>
-      <Route exact path='/chat' element={<ChatPage />} />
-      <Route exact path='/login' element={<Login />}></Route>
-      <Route exact path='/register' element={<Register />}></Route>
-      <Route exact path='/profile' element={<Profile />}></Route>
-      <Route
-        exact
-        path='/ProductListings'
-        element={<ProductListings />}
-      ></Route>
-      <Route
-        exact
-        path='/'
-        element={
-          <ChatContext.Provider value={useChatContext()}>
-            <ChatPage />
-          </ChatContext.Provider>
-        }
-      />
-    </Routes>
+    <Background>
+      <div className="w-screen flex flex-col md:grid md:grid-cols-[3rem,5fr] md:w-11/12 md:mx-auto h-screen md:my-2  md:h-[calc(100vh-2rem)]">
+        <SideNav />
+        {props.children}
+      </div>
+    </Background>
   );
 }
 

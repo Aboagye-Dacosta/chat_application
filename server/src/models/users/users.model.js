@@ -4,9 +4,10 @@ const options = {
   _id: 1,
   username: 1,
   email: 1,
-  password: 1,
+  description: 1,
   userAvatar: 1,
   friends: 1,
+  hasAvatar: 1,
   friendRequests: 1,
   friendRequestsSent: 1,
   createdAt: 1,
@@ -24,7 +25,7 @@ function saveUser(user) {
 //get all users from the database
 function getAllUsers(currentUserId) {
   return new Promise((resolve, reject) => {
-    UserModel.find( { _id: { $nin: [currentUserId] } })
+    UserModel.find({ _id: { $nin: [currentUserId] } })
       .populate({
         path: "friendRequestsSent",
         select: options,
@@ -43,7 +44,6 @@ function getAllUsers(currentUserId) {
 }
 
 // get user by id
-
 function getUserById(userId) {
   return new Promise((resolve, reject) => {
     UserModel.findById(userId)

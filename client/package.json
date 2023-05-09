@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && rm -r ../server/public/* && mv dist/* ../server/public",
+    "build": "vite build",
+    "populate": "vite build && rm -r ../server/public/assets && rm ../server/public/index.html && mv ./dist/asset ../server/public && mv ./dist/index.html ../server/public",
     "preview": "vite preview",
     "watch": "npm-watch"
   },
@@ -18,10 +19,12 @@
     "graphql": "^16.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-images-uploading": "^3.1.7",
     "react-router-dom": "^6.9.0",
     "react-toastify": "^9.1.2",
     "socket.io-client": "^4.6.1",
-    "tailwind-scrollbar": "^3.0.0"
+    "tailwind-scrollbar": "^3.0.0",
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",

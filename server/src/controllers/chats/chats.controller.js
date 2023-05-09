@@ -1,4 +1,5 @@
 const ChatModel = require("../../models/chats/chats.model");
+const UserModel = require("../../models/users/users.model");
 
 async function httpSaveChat({ to, from, message }) {
   try {
@@ -27,7 +28,11 @@ async function httpReadChats(currentUserId, friendId) {
 
 async function httpGetRecentChattedUsers(currentUserId) {
   try {
-    const data = await ChatModel.readRecentChattedUsers(currentUserId);
+    const user = await UserModel.getUserById(currentUserId);
+    const data = await ChatModel.readRecentChattedUsers(
+      user.friends,
+      currentUserId
+    );
     return data;
   } catch (error) {
     console.log(error);

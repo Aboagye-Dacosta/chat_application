@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 //schema for user for a chat app
 
 const UserSchema = new mongoose.Schema({
@@ -13,6 +12,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  description: {
+    type: String,
+    default: "",
   },
   password: {
     type: String,
