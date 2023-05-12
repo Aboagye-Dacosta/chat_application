@@ -1,4 +1,5 @@
 const UserModel = require("./users.mongo");
+const RecentModel = require("../chats/recent.mongo.js");
 
 const options = {
   _id: 1,
@@ -176,9 +177,17 @@ function removeFriend(userId, friendId) {
 }
 
 //get recent chatted users
-function recentChattedFriends() {
+async function recentChattedFriends(currentUserId) {
+  let from = await RecentModel.find({ from: currentUserId }, { to: 1, _id: 0 });
+  let to = await RecentModel.find({ to: currentUserId }, { from: 1, _id: 0 });
+
+  from = from.map((obj) => obj.to);
+  to = to.map((obj) => obj.from);
+
   return new Promise((resolve, reject) => {
-    UserModel.find({})
+    UserModel.find({
+      $or: [{ _id: { $in: from } }, { _id: { $in: to } }],
+    })
       .then((data) => resolve(data))
       .catch((error) => reject(error));
   });
@@ -198,4 +207,5 @@ module.exports = {
   removeFriend,
   removeFriendRequestSent,
   removeFriendRequestReceived,
+  recentChattedFriends,
 };

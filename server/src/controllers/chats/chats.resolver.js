@@ -2,16 +2,7 @@ const ChatController = require("./chats.controller");
 
 module.exports = {
   Query: {
-    chats: async (_, args) => {},
-    recentChattedUsers: async (_, args, context) => {
-      return await ChatController.httpGetRecentChattedUsers(args.currentUserId);
-    },
     readChats: async (_, args, context) => {
-      console.log(
-        "logging from chat resolver",
-        args.friendId,
-        context.getUser._id
-      );
       return await ChatController.httpReadChats(
         context.getUser._id,
         args.friendId

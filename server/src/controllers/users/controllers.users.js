@@ -85,8 +85,7 @@ async function httpGetAllUsers(currentUserId) {
 
 async function httpGetUserById(userId) {
   try {
-    const user = await UserModel.getUserById(userId);
-    return user;
+    return await UserModel.getUserById(userId);
   } catch (error) {
     console.log(error);
   }
@@ -112,8 +111,8 @@ async function httpGetUserByUsername({ username }) {
 
 async function httpSaveSendFriendRequest(currentUserId, friendId) {
   try {
-    await UserModel.sendFriendRequest(currentUserId, friendId);
-    await UserModel.saveFriendRequest(currentUserId, friendId);
+    UserModel.sendFriendRequest(currentUserId, friendId);
+    UserModel.saveFriendRequest(currentUserId, friendId);
   } catch (error) {
     return res.status(200).json({
       message: "sorry could not save sent request",
@@ -124,10 +123,10 @@ async function httpSaveSendFriendRequest(currentUserId, friendId) {
 
 async function httpAcceptFriendRequest(currentUserId, friendId) {
   try {
-    await UserModel.removeFriendRequestSent(friendId, currentUserId);
-    await UserModel.removeFriendRequestReceived(currentUserId, friendId);
-    await UserModel.acceptFriendRequest(currentUserId, friendId);
-    await UserModel.acceptFriendRequest(friendId, currentUserId);
+    UserModel.removeFriendRequestSent(friendId, currentUserId);
+    UserModel.removeFriendRequestReceived(currentUserId, friendId);
+    UserModel.acceptFriendRequest(currentUserId, friendId);
+    UserModel.acceptFriendRequest(friendId, currentUserId);
   } catch (error) {
     console.log(error);
   }
@@ -135,18 +134,26 @@ async function httpAcceptFriendRequest(currentUserId, friendId) {
 
 async function httpCancelRequestSent(currentUserId, friendId) {
   try {
-    await UserModel.removeFriendRequestSent(currentUserId, friendId);
-    await UserModel.removeFriendRequestReceived(friendId, currentUserId);
+    UserModel.removeFriendRequestSent(currentUserId, friendId);
+    UserModel.removeFriendRequestReceived(friendId, currentUserId);
   } catch (error) {
     console.log(error);
   }
 }
 
 //removing friend
-async function httpRemoveFriend(currentUserId, friendId) {
+function httpRemoveFriend(currentUserId, friendId) {
   try {
-    await UserModel.removeFriend(currentUserId, friendId);
-    await UserModel.removeFriend(friendId, currentUserId);
+    UserModel.removeFriend(currentUserId, friendId);
+    UserModel.removeFriend(friendId, currentUserId);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function httpRecentChattedFriends(currentUserId) {
+  try {
+    return UserModel.recentChattedFriends(currentUserId);
   } catch (error) {
     console.log(error);
   }
@@ -162,4 +169,5 @@ module.exports = {
   httpAcceptFriendRequest,
   httpCancelRequestSent,
   httpRemoveFriend,
+  httpRecentChattedFriends,
 };

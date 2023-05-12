@@ -16,15 +16,15 @@ const userOptions = {
 
 //saving chat
 
-function saveChat(from, to, message) {
+function saveChat(from, to, message, createdAt, updatedAt) {
   return new Promise((resolve, reject) => {
     ChatMongoModel.create({
       from,
       to,
       message,
       staled: false,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      createdAt,
+      updatedAt,
     })
       .then((data) => resolve(data))
       .catch((error) => {

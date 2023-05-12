@@ -2,8 +2,18 @@ const ChatModel = require("../../models/chats/chats.model");
 const UserModel = require("../../models/users/users.model");
 
 async function httpSaveChat({ to, from, message }) {
-  try {
-    const data = await ChatModel.saveChat(from, to, message);
+  try
+  {
+   
+    const createdAt = Date.now();
+    const updatedAt = Date.now();
+    const data = await ChatModel.saveChat(
+      from,
+      to,
+      message,
+      createdAt,
+      updatedAt
+    );
     await ChatModel.saveRecentChatteredUser(from, to);
 
     return data;

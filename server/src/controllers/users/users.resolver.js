@@ -5,14 +5,13 @@ module.exports = {
     users: async (_, args, context) => {
       return await UserController.httpGetAllUsers(context.getUser._id);
     },
-    recent: async (_, args) => {},
+    
+    recentChattedFriends: async (_, args, context) => {
+      return await UserController.httpRecentChattedFriends(args.currentUserId);
+    },
 
     currentUser: async (_, args, context) => {
       const user = await UserController.httpGetUserById(context.getUser._id);
-      console.log(
-        "🚀 ~ file: users.resolver.js:13 ~ currentUser: ~ user:",
-        user
-      );
       return user;
     },
 
