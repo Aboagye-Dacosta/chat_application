@@ -23,8 +23,8 @@ users on the application. It comes with full authentication system the utilizes 
 
 ### Desktop responsive UI
 
-![Desktop version of application](chat-Application/both-profile.png)
+![Desktop version of application](chat-Application-images/both-profile.png)
 
 ### Mobile responsive UI
 
-![Alt text](chat-Application/front.png)
+![Alt text](chat-Application-images/front.png)
