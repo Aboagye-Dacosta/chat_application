@@ -14,11 +14,12 @@ function FriendProfile({
   userAvatar,
 }) {
   return (
-    <div className="flex h-max items-center justify-center flex-row  md:justify-start w-full md:h-[4rem]   py-2 px-3 my-2 hover:bg-[rgba(0,0,0,.2)] text-ellipsis overflow-hidden text-white select-none cursor-pointer">
+    <div className="flex mx-1 h-max items-center justify-center flex-row  md:justify-start w-[98%] md:h-[4rem] py-1 px-2 hover:bg-[rgba(0,0,0,.2)] text-ellipsis overflow-hidden text-white select-none cursor-pointer rounded-md">
       <ProfileImage
         hasAvatar={hasAvatar}
         username={username}
         userAvatar={userAvatar}
+        styles={"mr-4"}
       />
       <div className="flex flex-col h-full flex-1  w-full">
         <div className="flex flex-row  justify-between  items-center flex-1">
@@ -27,7 +28,7 @@ function FriendProfile({
         </div>
 
         <p className="text-sm text-ellipsis overflow-hidden flex-1 text-gray-400 w-full">
-          {currentMsg}
+          last chat message
         </p>
       </div>
     </div>

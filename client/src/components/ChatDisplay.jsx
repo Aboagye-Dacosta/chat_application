@@ -2,23 +2,15 @@ import ChatItem from "./ChatItem";
 import useChatStore from "../hooks/useChatStore";
 import { shallow } from "zustand/shallow";
 import { useQuery, gql } from "@apollo/client";
-import useLoadChat from "../hooks/useLoadChat";
+import { useCallback, useEffect, useState } from "react";
+import ProfileDetail from "./ProfileDetail";
 
 function ChatDisplay() {
-  const [selectedUser, currentUser, setSendMessage, setCurrentUser] =
-    useChatStore(
-      (state) => [
-        state.selectedUser,
-        state.currentUser,
-        state.setSendMessage,
-        state.setCurrentUser,
-      ],
-      shallow
-    );
-
-  const { sendMessage, chatMessage } = useLoadChat();
-  setSendMessage(sendMessage);
-  console.log("🚀 ~ file: App.jsx:18 ~ App ~ chatMessage:", chatMessage);
+  const [chatMessages, setMessage] = useState([]);
+  const [selectedUser, currentUser, socket] = useChatStore(
+    (state) => [state.selectedUser, state.currentUser, state.socket],
+    shallow
+  );
 
   const { loading, data, refetch } = useQuery(
     gql`
@@ -30,14 +22,6 @@ function ChatDisplay() {
           from
           createdAt
         }
-        currentUser {
-          _id
-          username
-          email
-          hasAvatar
-          description
-          userAvatar
-        }
       }
     `,
     {
@@ -45,36 +29,42 @@ function ChatDisplay() {
     }
   );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]">
-        loading
-      </div>
-    );
-  }
+  const refetchData = useCallback(async () => {
+    const { data } = await refetch();
+    setMessage(data.readChats);
+  });
 
-  setCurrentUser(data.currentUser);
+  useEffect(() => {
+    setMessage(data?.readChats || []);
+  }, [loading]);
 
-  console.log("loading from display chat", data.currentUser);
+  useEffect(() => {
+    refetchData();
+  }, [selectedUser]);
+
   const getChatState = (chat) => {
     const state = chat.from === currentUser._id;
     return state;
   };
 
-  let chatData = data.readChats;
-  if (chatMessage.length > 0) {
-    chatData = chatMessage;
-  }
+  socket.on("chat", (args) => {
+    if (
+      (args.from === currentUser._id || selectedUser._id === args.from) &&
+      (args.to === currentUser._id || selectedUser._id === args.to)
+    ) {
+      setMessage(args.data);
+    }
+  });
 
   return (
     <>
-      {chatData.length > 0 ? (
-        <div className="flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]">
+      {loading == false && chatMessages?.length > 0 ? (
+        <div className="displayChat flex-1 px-10 overflow-auto  scrollbar-thin scrollbar-thumb-[rgba(0,0,0,.8)]">
           <ul>
-            {chatData.map((chat) => (
+            {chatMessages.map((chat) => (
               <ChatItem
                 key={chat._id}
-                date={new Date(Number(chat.createdAt)).toDateString()}
+                date={chat.createdAt}
                 current={getChatState(chat)}
                 message={chat.message}
                 hasAvatar={

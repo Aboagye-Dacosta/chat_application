@@ -10,11 +10,13 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import FriendsPage from "./pages/FriendsPage";
-import LoadData from "./pages/LoadData";
 import useLoadChat from "./hooks/useLoadChat";
 
 function App() {
-  
+  const { socket } = useLoadChat();
+  const [setSocket] = useChatStore((state) => [state.setSocket], shallow);
+  setSocket(socket);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -22,8 +24,7 @@ function App() {
         <Route exact path="/login" element={<Login />}></Route>
         <Route exact path="/register" element={<Register />}></Route>
         <Route exact path="/profile" element={<Profile />}></Route>
-        <Route exact path="/chat" element={<ChatPage />} />
-        <Route exact path="/" element={<LoadData />} />
+        <Route exact path="/" element={<ChatPage />} />
       </Routes>
     </BrowserRouter>
   );

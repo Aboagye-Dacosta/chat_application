@@ -1,8 +1,6 @@
 import { io } from "socket.io-client";
-import { useState } from "react";
 
 function useLoadChat() {
-  const [chatMessage, setChatMessage] = useState({});
   const socket = io();
 
   socket.on("connect", () => {
@@ -16,16 +14,7 @@ function useLoadChat() {
     }
   });
 
-  const sendMessage = (message) => {
-    socket.emit("chat", { ...message });
-  };
-
-  socket.on("chat", (args) => {
-    console.log("🚀 ~ file: useLoadChat.js:24 ~ socket.on ~ args:", args)
-    setChatMessage(args);
-  });
-
-  return { chatMessage, sendMessage };
+  return { socket };
 }
 
 export default useLoadChat;

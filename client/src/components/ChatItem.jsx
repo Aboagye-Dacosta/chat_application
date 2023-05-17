@@ -22,8 +22,14 @@ function ChatItem({
       }
     >
       <div className={"max-w-sm flex flex-col " + textOrder}>
-        <div className={"py-2 px-3 rounded-xl mx-1 " + bg}>{message}</div>
-        <div className={"self-end px-3 pt-1 text-sm text-gray-400 " + datePos}>
+        <div
+          className={
+            "py-2 px-3 rounded-xl mx-1 flex items-center justify-center " + bg
+          }
+        >
+          <span>{message}</span>
+        </div>
+        <div className={"px-3 pt-1 text-sm text-gray-400 " + datePos}>
           {date}
         </div>
       </div>
@@ -32,11 +38,13 @@ function ChatItem({
           "w-8 h-8 rounded-full absolute bottom-4 " + bg + " " + imgPos
         }
       >
-        <ProfileImage
-          hasAvatar={hasAvatar}
-          userAvatar={userAvatar}
-          username={username}
-        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-max">
+          <ProfileImage
+            hasAvatar={hasAvatar}
+            userAvatar={userAvatar}
+            username={username}
+          />
+        </div>
       </div>
     </li>
   );

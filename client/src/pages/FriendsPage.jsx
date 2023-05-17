@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
 import { useQuery, gql } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-import ProfileImage from "../components/ProfileImage";
+import { AiOutlineReload } from "react-icons/all";
 import AppLayout from "./AppLayout";
 import useHandleFriendRequests from "../hooks/useHandleFriendRequests";
 import useChatStore from "../hooks/useChatStore";
+import FriendsPageItem from "../components/FriendsPageItem";
 
 function FriendsPage() {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ function FriendsPage() {
     removeFriend,
   } = useHandleFriendRequests();
 
-  const [setSelectedUser] = useChatStore(
-    (state) => [state.setSelectedUser],
+  const [setSelectedUser, setCurrentUser] = useChatStore(
+    (state) => [state.setSelectedUser, state.setCurrentUser],
     shallow
   );
 
@@ -69,6 +70,10 @@ function FriendsPage() {
       currentUser {
         _id
         username
+        email
+        description
+        hasAvatar
+        userAvatar
         friends {
           _id
           username
@@ -90,6 +95,17 @@ function FriendsPage() {
       }
     }
   `);
+
+  useEffect(() => {
+    setCurrentUser({
+      _id: data?.currentUser?._id,
+      username: data?.currentUser?.username,
+      hasAvatar: data?.currentUser?.hasAvatar,
+      userAvatar: data?.currentUser?.userAvatar,
+      description: data?.currentUser?.description,
+      email: data?.currentUser?.email,
+    });
+  }, [loading]);
 
   return (
     <AppLayout>
@@ -126,7 +142,7 @@ function FriendsPage() {
                 await refetchUsers();
               }}
             >
-              reload
+              <AiOutlineReload className="text-[1.2rem] hover:bg-slate-800" />
             </li>
           </ul>
         </div>
@@ -135,7 +151,7 @@ function FriendsPage() {
           <ul className="nav flex text-white px-4  pt-5 w-full relative">
             <div className="selected absolute top-full left-[20px]  bg-red-400  h-[1px] w-[150px] transition-transform duration-200"></div>
             <li
-              className="nav-item text-center capitalize nav-item px-3 py-2 mr-1 md:hover:bg-black select-none w-[10rem]"
+              className="nav-item text-center capitalize nav-item px-3 py-2 mr-1 md:hover:bg-black select-none w-[10rem] rounded-md"
               style={{
                 width: "150px",
               }}
@@ -148,7 +164,7 @@ function FriendsPage() {
             </li>
 
             <li
-              className="nav-item text-center  capitalize px-3 py-2 mr-1 md:hover:bg-black select-none"
+              className="nav-item text-center  capitalize px-3 py-2 mr-1 md:hover:bg-black select-none rounded-md"
               style={{ width: "150px" }}
               onClick={() => {
                 refetchUsers();
@@ -158,49 +174,39 @@ function FriendsPage() {
               Users
             </li>
             <li
-              className="text-center absolute right-4 top-1/2 -translate-y-1/2 capitalize px-3 py-2 mr-1 md:hover:bg-black select-none"
+              className="text-center absolute right-4 top-1/2 -translate-y-1/2 capitalize px-3 py-2 mr-1 md:hover:bg-black select-none rounded-md"
               onClick={async () => {
                 await refetchUsers();
               }}
             >
-              reload
+              <AiOutlineReload className="text-[1.2rem]" />
             </li>
           </ul>
 
           {show ? (
             <ul className="mx-5 w-full lg:w-[20rem] lg:mx-3 flex flex-col items-start my-5">
               {data.currentUser.friends.map((user) => (
-                <li
-                  key={user._id}
-                  className="flex items-center justify-start w-full px-3 py-2 bg-[rgba(0,0,0,.6)] select-none text-white cursor-pointer mb-3"
-                  onClick={(e) => {
+                <FriendsPageItem
+                  key={user.id}
+                  action={"Unfriend"}
+                  data={user}
+                  styles={"text-red-300"}
+                  actionFunction={async (e) => {
+                    e.stopPropagation();
+                    await removeFriend({
+                      variables: {
+                        id: data.currentUser._id,
+                        friendId: user._id,
+                      },
+                    });
+                    await refetchUsers();
+                  }}
+                  handleClick={(e) => {
                     e.preventDefault();
                     setSelectedUser(user);
-                    navigate("/chat");
+                    navigate("/");
                   }}
-                >
-                  <ProfileImage
-                    username={user.username}
-                    hasAvatar={user.hasAvatar}
-                    userAvatar={user.userAvatar}
-                  />
-                  <span className="flex-1 ml-2"> {user.username}</span>
-                  <button
-                    className="text-red-500"
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      await removeFriend({
-                        variables: {
-                          id: data.currentUser._id,
-                          friendId: user._id,
-                        },
-                      });
-                      await refetchUsers();
-                    }}
-                  >
-                    remove
-                  </button>
-                </li>
+                />
               ))}
             </ul>
           ) : (
@@ -210,30 +216,21 @@ function FriendsPage() {
                   <h2 className="py-2 text-left w-full">Sent Requests</h2>
                   <ul className="mb-5 w-full lg:w-full">
                     {data.currentUser.friendRequestsSent.map((user) => (
-                      <li
-                        className="flex justify-between items-center w-full  bg-[rgba(0,0,0,.8)] px-3 py-2 mb-3 select-none cursor-pointer"
-                        key={user._id}
-                      >
-                        <ProfileImage
-                          username={user.username}
-                          hasAvatar={user.hasAvatar}
-                          userAvatar={user.userAvatar}
-                        />
-                        <span className="flex-1 ml-2">{user.username}</span>
-                        <button
-                          onClick={async () => {
-                            await declineFriendRequest({
-                              variables: {
-                                id: data.currentUser._id,
-                                friendId: user._id,
-                              },
-                            });
-                            await refetchUsers();
-                          }}
-                        >
-                          cancel
-                        </button>
-                      </li>
+                      <FriendsPageItem
+                        key={user.id}
+                        action={"cancel"}
+                        styles={"text-red-300"}
+                        data={user}
+                        actionFunction={async () => {
+                          await declineFriendRequest({
+                            variables: {
+                              id: data.currentUser._id,
+                              friendId: user._id,
+                            },
+                          });
+                          await refetchUsers();
+                        }}
+                      />
                     ))}
                   </ul>
                 </div>
@@ -243,46 +240,30 @@ function FriendsPage() {
                   <h2 className="py-2 text-left w-full">Received Requests</h2>
                   <ul className="mb-5 w-full lg:w-full">
                     {data.currentUser.friendRequests.map((user) => (
-                      <li
-                        className="flex  justify-between items-center  w-full  bg-[rgba(0,0,0,.8)] px-3 py-2 mb-3 select-none cursor-pointer"
-                        key={user._id}
-                      >
-                        <ProfileImage
-                          username={user.username}
-                          hasAvatar={user.hasAvatar}
-                          userAvatar={user.userAvatar}
-                        />
-                        <span className="self-start flex-1 ml-2">
-                          {user.username}
-                        </span>
-                        <button
-                          className="mr-2 text-red-500"
-                          onClick={async () => {
-                            await declineFriendRequest({
-                              variables: {
-                                id: user._id,
-                                friendId: data.currentUser._id,
-                              },
-                            });
-                            await refetchUsers();
-                          }}
-                        >
-                          decline
-                        </button>
-                        <button
-                          onClick={() => {
-                            acceptFriendRequest({
-                              variables: {
-                                id: data.currentUser._id,
-                                friendId: user._id,
-                              },
-                            });
-                            refetchUsers();
-                          }}
-                        >
-                          confirm
-                        </button>
-                      </li>
+                      <FriendsPageItem
+                        key={user.id}
+                        action={"confirm"}
+                        data={user}
+                        actionFunction={() => {
+                          acceptFriendRequest({
+                            variables: {
+                              id: data.currentUser._id,
+                              friendId: user._id,
+                            },
+                          });
+                          refetchUsers();
+                        }}
+                        hasSecondButton={true}
+                        secondActionFunction={async () => {
+                          await declineFriendRequest({
+                            variables: {
+                              id: user._id,
+                              friendId: data.currentUser._id,
+                            },
+                          });
+                          await refetchUsers();
+                        }}
+                      />
                     ))}
                   </ul>
                 </div>
@@ -292,32 +273,22 @@ function FriendsPage() {
                   <h2 className="py-2 text-left w-full">Users</h2>
                   <ul className="mb-5 w-full lg:w-full">
                     {data.users.map((user) => (
-                      <li
-                        className="flex  w-full  justify-between items-center bg-[rgba(0,0,0,.8)] px-3 py-2 mb-3 select-none cursor-pointer"
+                      <FriendsPageItem
                         key={user.id}
-                      >
-                        <ProfileImage
-                          username={user.username}
-                          hasAvatar={user.hasAvatar}
-                          userAvatar={user.userAvatar}
-                        />
-                        <span className="flex-1 ml-2">{user.username}</span>
-                        <button
-                          className="disabled:text-gray-400"
-                          disabled={toggleAddButtonState(data, user._id)}
-                          onClick={async () => {
-                            await sendFriendRequest({
-                              variables: {
-                                id: data.currentUser._id,
-                                friendId: user._id,
-                              },
-                            });
-                            await refetchUsers();
-                          }}
-                        >
-                          Add
-                        </button>
-                      </li>
+                        action={"Add"}
+                        data={user}
+                        styles={"text-white"}
+                        disabbled={toggleAddButtonState(data, user._id)}
+                        actionFunction={async () => {
+                          await sendFriendRequest({
+                            variables: {
+                              id: data.currentUser._id,
+                              friendId: user._id,
+                            },
+                          });
+                          await refetchUsers();
+                        }}
+                      />
                     ))}
                   </ul>
                 </div>

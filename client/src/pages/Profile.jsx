@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
+import { BsImageFill } from "react-icons/all";
 import ImageUploading from "react-images-uploading";
 
 import Background from "../components/Background";
-import IconImage from "../components/icons/IconImage";
 
 function Profile() {
   const navigate = useNavigate();
@@ -89,7 +89,7 @@ function Profile() {
               <div className="flex flex-col md:flex-row w-full justify-center items-start mt-5">
                 <div className="relative w-[20rem] md:min-w-[20rem] h-[20rem] border border-slate-400">
                   {imageList.length == 0 && (
-                    <IconImage className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10rem]" />
+                    <BsImageFill className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10rem]" />
                   )}
                   {imageList.map((image, index) => {
                     setIndex(index);

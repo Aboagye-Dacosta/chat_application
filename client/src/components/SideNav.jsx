@@ -1,17 +1,28 @@
 import { Link } from "react-router-dom";
 import { shallow } from "zustand/shallow";
-import IconFriends from "../components/icons/IconFriends";
-import IconMessage from "../components/icons/IconMessage";
-import IconBack from "../components/icons/IconBack";
+import {
+  AiFillMessage,
+  BsFillPeopleFill,
+  IoArrowBackOutline,
+} from "react-icons/all";
+
 import Clickable from "./Clickable";
 import ProfileImage from "./ProfileImage";
 import useChatStore from "../hooks/useChatStore";
+import { useState } from "react";
+import ProfileDetail from "./ProfileDetail";
 
 function SideNav() {
-  const [currentUser, setSelectedUser] = useChatStore(
-    (state) => [state.currentUser, state.setSelectedUser],
+  const [currentUser, setSelectedUser, refreshRecentChats] = useChatStore(
+    (state) => [
+      state.currentUser,
+      state.setSelectedUser,
+      state.refreshRecentChats,
+    ],
     shallow
   );
+
+  const [toggleProfile, setToggleProfile] = useState(false);
 
   return (
     <>
@@ -22,19 +33,22 @@ function SideNav() {
               className="md:hidden"
               handleClick={() => handleToggleShow()}
             >
-              <li className="link md:mt-3 mr-1 md:mr-0  rounded-full p-2 hover:bg-gray-500 transition-all duration-200 ">
-                <IconBack className="text-[1.2rem]" />
+              <li className="link md:mt-3 mr-1 md:mr-0  rounded-full p-2 hover:bg-gray-500 transition-all duration-200">
+                <IoArrowBackOutline className="text-[1.2rem]" />
               </li>
             </Clickable>
           )}
-          <Link to="/chat">
+          <Link to="/">
             <li
               className={
-                "link md:mt-3 mr-1 md:mr-0  rounded-full p-2 hover:bg-gray-500 transition-all duration-200 "
+                "link md:mt-3 mr-1 md:mr-0 rounded-full p-2 hover:bg-gray-500 transition-all duration-200 "
               }
-              onClick={() => setSelectedUser({})}
+              onClick={() => {
+                refreshRecentChats();
+                setSelectedUser({});
+              }}
             >
-              <IconMessage className="text-[1.2rem]" />
+              <AiFillMessage className="text-[1.2rem]" />
             </li>
           </Link>
           <Link to="/friends">
@@ -43,15 +57,24 @@ function SideNav() {
                 "link md:mt-3 rounded-full p-2 hover:bg-gray-500 transition-all duration-200 "
               }
             >
-              <IconFriends className="text-[1.2rem]" />
+              <BsFillPeopleFill className="text-[1.2rem]" />
             </li>
           </Link>
         </ul>
-        <ProfileImage
-          hasAvatar={currentUser.hasAvatar}
-          userAvatar={currentUser.userAvatar}
-          username={currentUser.username}
-        />
+        <div className="relative">
+          <ProfileImage
+            hasAvatar={currentUser.hasAvatar}
+            userAvatar={currentUser.userAvatar}
+            username={currentUser.username}
+            handleClick={() => setToggleProfile((state) => !state)}
+          />
+          <ProfileDetail
+            state={toggleProfile}
+            data={currentUser}
+            styles={" bottom-[2rem] left-7"}
+            closeCallback={() => setToggleProfile(false)}
+          />
+        </div>
       </div>
     </>
   );
