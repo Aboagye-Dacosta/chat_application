@@ -14,13 +14,14 @@ import useChatStore from "../hooks/useChatStore";
 
 function ChatPage() {
   const navigate = useNavigate();
-  const [setCurrentUser, setIsUserLoggedIn, selectedUser, socket] =
+  const [setCurrentUser, setIsUserLoggedIn, selectedUser, socket, showChat] =
     useChatStore(
       (state) => [
         state.setCurrentUser,
         state.setIsUserLoggedIn,
         state.selectedUser,
         state.socket,
+        state.showChat,
       ],
       shallow
     );
@@ -63,23 +64,23 @@ function ChatPage() {
         <div className="bg-[rgba(0,0,0,.8)]  md:flex flex-col w-ful backdrop:blur-sm relative flex-1 h-full overflow-hidden ">
           {selectedUserState && (
             <>
-              <ChatHeader lastSeen="last seen" username="John Doe" />
+              <ChatHeader lastSeen="last seen" />
               <ChatDisplay />
               <ChatFooter />
             </>
           )}
         </div>
       </div>
-      {/* <div className="lg:hidden overflow-hidden">
-        {!selectedUserState && <RecentChatPage />}
-        {selectedUserState && (
+      <div className="lg:hidden overflow-hidden">
+        {!selectedUserState && !showChat && <RecentChatPage />}
+        {selectedUserState && showChat && (
           <div className="bg-[rgba(0,0,0,.8)] flex flex-col w-ful backdrop:blur-sm relative flex-1 h-screen overflow-hidden pb-[3rem]">
-            <ChatHeader lastSeen="last seen" username="John Doe" />
+            <ChatHeader lastSeen="last seen" />
             <ChatDisplay />
             <ChatFooter />
           </div>
         )}
-      </div> */}
+      </div>
     </AppLayout>
   );
 }

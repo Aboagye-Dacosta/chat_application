@@ -5,17 +5,20 @@ import { shallow } from "zustand/shallow";
 import { useQuery, gql } from "@apollo/client";
 
 function RecentChatPage() {
-  const [setRefreshRecentChats, setSelectedUser, currentUser] = useChatStore(
-    (state) => [
-      state.setRefreshRecentChats,
-      state.setSelectedUser,
-      state.currentUser,
-    ],
-    shallow
-  );
+  const [setRefreshRecentChats, setSelectedUser, currentUser, setShowChat] =
+    useChatStore(
+      (state) => [
+        state.setRefreshRecentChats,
+        state.setSelectedUser,
+        state.currentUser,
+        state.setShowChat,
+      ],
+      shallow
+    );
 
   const handleClick = (friend) => {
     setSelectedUser(friend);
+    setShowChat(true);
   };
 
   const { data, loading, refetch, error } = useQuery(
